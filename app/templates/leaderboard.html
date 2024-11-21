@@ -21,10 +21,14 @@
             
             font-family: 'Tomorrow', sans-serif;
         }
+        .logo   {
+            top: 20px;
+            left: 10px;
+        }
         .slide-in {
             animation: slideIn 0.5s ease-out forwards;
         }
-        #timer {
+        .timer {
             font-size: 80px;
             margin: 20px;
         }
@@ -77,59 +81,69 @@ background: radial-gradient(circle, rgba(19,100,101,1) 0%, rgba(21,42,42,1) 80%)
         }
     </style>
 </head>
-<body class="main overflow-hidden text-white flex  relative   px-12 justify-center min-h-screen">
+<body class="main overflow-hidden text-white flex   relative  px-12 justify-center min-h-screen">
+    <img src="../static/images/Group 15 1.png" alt="Cube" class="absolute w-96 h-24  logo      ">
     <img src="../static/images/Round Cube2.png" alt="Cube" class="absolute img -right-10 ">
     <img src="../static/images/Rock.png" alt="Cube2" class="absolute w-96 img2  -bottom-16  -left-10 ">
+<div class="flex flex-col items-center w-full">
+
+    <div id="countdown"  class="font-extrabold text-center timer"></div>
+    
     <div class="  w-5/6    rounded-lg shadow-xl py-2 px-6">
-    <div class="bb2 px-4 py-2 ">
-        <h1 class="font-bold  text-3xl text-center ">LEADERBOARD</h1>
-        <div class="">
-            <table class="w-full">
-                <thead>
+        <div class="bb2 px-4 py-2 ">
+    
+    
+            <h1 class="font-bold  text-3xl text-center ">LEADERBOARD</h1>
+            <div class="">
+                <table class="w-full">
+                    <thead>
+                        
+                        <tr class="text-3xl border-b border-white ">
+                            <!-- <th class="px-4 py-3 text-left">Rank</th> -->
+                            <th class="px-4 py-3 text-left"></th>
+                            <th class="px-4 py-3 text-left">Team Name</th>
+                            <th class="px-4 py-3 text-right">Score</th>
+                            <!-- {% for competition in competitions %} -->
+                            <!-- <th class="px-4 py-3 text-right">{{ competition }}</th> -->
+                            <!-- {% endfor %} -->
+                        </tr>
                     
-                    <tr class="text-3xl border-b border-white ">
-                        <!-- <th class="px-4 py-3 text-left">Rank</th> -->
-                        <th class="px-4 py-3 text-left"></th>
-                        <th class="px-4 py-3 text-left">Team Name</th>
-                        <th class="px-4 py-3 text-right">Score</th>
-                        <!-- {% for competition in competitions %} -->
-                        <!-- <th class="px-4 py-3 text-right">{{ competition }}</th> -->
-                        <!-- {% endfor %} -->
-                    </tr>
-                
-                </thead>
-                <tbody>
-                    {% for team in rankings %}
-                    <tr class="team-row hover-effect border-b  border-white"
-                        style="animation-delay: {{ loop.index * 100 }}ms ">
-                        <td class="px-4 py-3">
-                            <span class="inline-flex items-center justify-center w-8 h-8  text-2xl
-                                ">
-                                {{ team.rank }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 font-medim text-2xl ">{{ team.team }}</td>
-                        <td class="px-4 py-3 text-right">
-                            <div class="flex items-center justify-end">
-                                <!-- <div class="w-32 bg-gray-700 rounded-full h-2 mr-3">
-                                    <div class="score-bar bg-blue-500 rounded-full h-2"
-                                         style="width: {{ (team.score / rankings[0].score * 100)|round }}%"></div>
-                                </div> -->
-                                {{ "%.2f"|format(team.score) }}
-                            </div>
-                        </td>
-                        <!-- {% for competition in competitions %}
-                        <td class="px-4 py-3 text-right">
-                            {{ team.all_ranks[competition] }}
-                        </td>
-                        {% endfor %} -->
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for team in rankings %}
+                        <tr class="team-row hover-effect border-b  border-white"
+                            style="animation-delay: {{ loop.index * 100 }}ms ">
+                            <td class="px-4 py-3">
+                                <span class="inline-flex items-center justify-center w-8 h-8  text-2xl
+                                    ">
+                                    {{ team.rank }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 font-medim text-2xl ">{{ team.team }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex items-center justify-end">
+                                    <!-- <div class="w-32 bg-gray-700 rounded-full h-2 mr-3">
+                                        <div class="score-bar bg-blue-500 rounded-full h-2"
+                                             style="width: {{ (team.score / rankings[0].score * 100)|round }}%"></div>
+                                    </div> -->
+                                    {{ "%.2f"|format(team.score) }}
+                                </div>
+                            </td>
+                            <!-- {% for competition in competitions %}
+                            <td class="px-4 py-3 text-right">
+                                {{ team.all_ranks[competition] }}
+                            </td>
+                            {% endfor %} -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
+
     <script>
         // Animation for rows
         document.addEventListener('DOMContentLoaded', function() {
@@ -153,7 +167,7 @@ background: radial-gradient(circle, rgba(19,100,101,1) 0%, rgba(21,42,42,1) 80%)
                     prefix = "Competition starts in: ";
                 } else if (now < endTime) {
                     targetTime = endTime;
-                    prefix = "Time remaining: ";
+                    prefix = "";
                 } else {
                     document.getElementById('countdown').textContent = "Competition has ended";
                     return;
