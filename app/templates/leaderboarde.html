@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Leaderboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tomorrow:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        body{
+            
+            font-family: 'Tomorrow', sans-serif;
+        }
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        #timer {
+            font-size: 80px;
+            margin: 20px;
+        }
+        .main{
+            background: rgb(19,100,101);
+background: radial-gradient(circle, rgba(19,100,101,1) 0%, rgba(21,42,42,1) 80%);
+    /* background: rgb(21,42,42); */
+    /* background: linear-gradient(0deg, rgba(21,42,42,1) 0%, rgba(5,120,118,1) 35%, rgba(19,100,101,1) 100%); */
+}
+
+        .team-row {
+            opacity: 0;
+        }
+        
+        .score-bar {
+            transition: width 1s ease-out;
+        }
+        
+        .hover-effect:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+        tbody tr:last-child {
+    border-bottom: none;
+}
+.img{
+    width :384px;
+    height: 350.85px;
+    z-index: -1;
+}
+.img2{
+    width :500px;
+    height: 500px;
+    z-index: -1;
+}
+        .bb2{
+            /* height: 600px; */
+            padding: 10px;
+            margin-top: 10px;
+            padding-bottom: 20px;
+            padding-top: 20px;
+  background: rgba(211, 211, 211, 0.235);
+  border-radius: 40px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(13.7px);
+  -webkit-backdrop-filter: blur(13.7px);
+  }
+        .countdown {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class=" main  text-white flex  relative   px-12 justify-center min-h-screen">
+    <img src="../static/images/Round Cube2.png" alt="Cube" class="absolute img -right-10 ">
+    <img src="../static/images/Rock.png" alt="Cube2" class="absolute w-96 img2  -bottom-16  -left-10 ">
+
+        <div class="  w-5/6    rounded-lg shadow-xl py-2 px-6">
+            <!-- <div id="timer" class="font-extrabold text-center">{%start_time%}</div> -->
+            <!-- <div id="countdown" class="text-center text-xl my-4 font-bold"></div> -->
+
+<div class="bb2 px-4 py-2 ">
+            <h1 class="font-bold  text-3xl text-center ">LEADERBOARD</h1>
+            <div class="">
+                <table class="w-full">
+                    <thead>
+                        
+                        <tr class="text-3xl border-b border-white ">
+                            <!-- <th class="px-4 py-3 text-left">Rank</th> -->
+                            <th class="px-4 py-3 text-left"></th>
+                            <th class="px-4 py-3 text-left">Team Name</th>
+                            <th class="px-4 py-3 text-right">Score</th>
+                            <!-- {% for competition in competitions %} -->
+                            <!-- <th class="px-4 py-3 text-right">{{ competition }}</th> -->
+                            <!-- {% endfor %} -->
+                        </tr>
+                    
+                    </thead>
+                    <tbody>
+                        {% for team in rankings %}
+                        <tr class="team-row hover-effect border-b  border-white"
+                            style="animation-delay: {{ loop.index * 100 }}ms ">
+                            <td class="px-4 py-3">
+                                <span class="inline-flex items-center justify-center w-8 h-8  text-2xl
+                                    ">
+                                    {{ team.rank }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 font-medim text-2xl ">{{ team.team }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex items-center justify-end">
+                                    <!-- <div class="w-32 bg-gray-700 rounded-full h-2 mr-3">
+                                        <div class="score-bar bg-blue-500 rounded-full h-2"
+                                             style="width: {{ (team.score / rankings[0].score * 100)|round }}%"></div>
+                                    </div> -->
+                                    {{ "%.2f"|format(team.score) }}
+                                </div>
+                            </td>
+                            <!-- {% for competition in competitions %}
+                            <td class="px-4 py-3 text-right">
+                                {{ team.all_ranks[competition] }}
+                            </td>
+                            {% endfor %} -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+    
+
+        <script>
+            // Animation for rows
+            document.addEventListener('DOMContentLoaded', function() {
+                const rows = document.querySelectorAll('.team-row');
+                rows.forEach((row, index) => {
+                    setTimeout(() => {
+                        row.classList.add('slide-in');
+                    }, index * 100);
+                });
+    
+                // Countdown timer
+                const startTime = new Date('{{ competition_status.start_time }}').getTime();
+                const endTime = new Date('{{ competition_status.end_time }}').getTime();
+                
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    let targetTime, prefix;
+                    
+                    if (now < startTime) {
+                        targetTime = startTime;
+                        prefix = "Competition starts in: ";
+                    } else if (now < endTime) {
+                        targetTime = endTime;
+                        prefix = "Time remaining: ";
+                    } else {
+                        document.getElementById('countdown').textContent = "Competition has ended";
+                        return;
+                    }
+                    
+                    const distance = targetTime - now;
+                    
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    document.getElementById('countdown').textContent = 
+                        `${prefix}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+                
+                // Update every second
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            });
+        </script>
+</body>
+</html>
